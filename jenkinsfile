@@ -23,11 +23,13 @@ pipeline {
         }
 
         stage('Run Gauge Tests') {
-            steps {
-                // Run Gauge tests
-                sh 'gauge run specs'
-            }
+           steps {
+              withEnv(["PATH+GAUGE=${tool 'Gauge'}/bin"]) {
+            sh 'gauge run specs'
         }
+    }
+}
+
 
         stage('Generate JUnit Report') {
             steps {
