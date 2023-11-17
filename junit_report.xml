@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites name="Gauge Tests" tests="2" failures="1" skipped="0">
-  <testcase name="Getting Started with Gauge" time="00:00:12">
+  <testcase name="Getting Started with Gauge" time="00:00:18">
     <failure type="Failure" message="{}"><![CDATA[Stacktrace: TypeError: Cannot read properties of undefined (reading 'exists')    at Object.<anonymous> (tests/step_implementation.js:88:47)]]></failure>
     <step status="Passed"><![CDATA[Open todo application]]></step>
     <step status="Passed"><![CDATA[Add tasks]]></step>
