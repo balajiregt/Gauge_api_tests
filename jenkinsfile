@@ -6,6 +6,14 @@ pipeline {
     }
 
     stages {
+        stage('Prepare') {
+            steps {
+                // Clear the junit_report.xml file or create an empty one
+                sh 'echo "" > junit_report.xml'
+                echo 'JUnit report file cleared or created.'
+            }
+        }
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -25,8 +33,6 @@ pipeline {
             post {
                 always {
                     sh 'node parseHtmlReport.js'
-                    // Debug: List files in the current directory
-                    sh 'ls -la'
                 }
             }
         }
@@ -34,15 +40,8 @@ pipeline {
 
     post {
         always {
-            // Attempt to publish JUnit test results
+            // Publish JUnit test results
             junit 'junit_report.xml'
-
-            // Debug: List files again to confirm if junit_report.xml still exists
-            sh 'ls -la'
-
-            // Clean up the junit_report.xml file after publishing
-            sh 'rm -f junit_report.xml'
-            echo 'Cleaned up junit_report.xml'
 
             echo 'Pipeline execution is complete.'
         }
