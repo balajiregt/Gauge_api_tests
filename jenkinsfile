@@ -24,7 +24,10 @@ pipeline {
 
         stage('Run Gauge Tests') {
             steps {
-                sh 'gauge run specs'
+                // Adding Gauge to PATH
+                withEnv(["PATH+GAUGE=/opt/homebrew/bin"]) {
+                    sh 'gauge run specs'
+                }
             }
         }
 
