@@ -24,8 +24,9 @@ pipeline {
 
         stage('Setup Gauge Environment') {
             steps {
-                // Adding Gauge to PATH
-                sh 'export PATH=$PATH:/opt/homebrew/bin && gauge --install-all'
+                withEnv(["PATH+GAUGE=/opt/homebrew/bin"]) {
+                    sh 'gauge --install-all'
+                }
             }
         }
 
