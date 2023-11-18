@@ -82,9 +82,3 @@ step("Add tasks <table>", async function (table) {
         await press('Enter');
     }
 });
-
-step("Must have <table>", async function (table) {
-    for (var row of table.rows) {
-        assert.ok(await text(row.cells[0]).exists());
-    }
-});
