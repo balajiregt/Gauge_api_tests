@@ -40,9 +40,12 @@ pipeline {
     post {
         always {
             // Publish JUnit test results
-
             junit 'junit_report.xml'
             
+            // Clean up the junit_report.xml file after it's been used
+            sh 'rm -f junit_report.xml'
+            echo 'Cleaned up junit_report.xml'
+
             // Action to perform after the pipeline execution, regardless of the result
             echo 'Pipeline execution is complete.'
         }
