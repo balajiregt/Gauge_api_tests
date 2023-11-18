@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="Gauge Tests" tests="2" failures="0" skipped="0">
-  <testcase name="Getting Started with Gauge" time="00:00:13"/>
-  <properties>
-    <property name="totalSpecs" value="1"/>
-    <property name="totalScenarios" value="2"/>
-    <property name="passedScenarios" value="1"/>
-    <property name="failedScenarios" value="0"/>
-    <property name="skippedScenarios" value="0"/>
-  </properties>
+<testsuites name="Gauge Tests" tests="4" failures="1" skipped="0">
+  <testcase name="Verify GET endpoint" classname="specs"/>
+  <testcase name="Verify POST endpoint" classname="specs"/>
+  <testcase name="Verify POST endpoint2" classname="specs">
+    <failure message="AssertionError: expected 201 to equal 401"><![CDATA[AssertionError: expected 201 to equal 401    at Object.<anonymous> (tests/step_implementation2.js:12:32)    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)]]></failure>
+  </testcase>
+  <testcase name="Verify GET endpoint2" classname="specs"/>
 </testsuites>

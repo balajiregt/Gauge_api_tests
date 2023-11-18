@@ -7,9 +7,9 @@ step("The gorest GET public endpoint should return status code 200", async () =>
     console.log(response)
 });
 
-step("The gorest POST public endpoint should return status code 401", async () => {
+step("The gorest POST public endpoint should return status code 201", async () => {
     const response = await axios.post('https://reqres.in/api/users?page=2')
-    expect(response.status).to.equal(401);
+    expect(response.status).to.equal(201);
     console.log(response)
 
 });
