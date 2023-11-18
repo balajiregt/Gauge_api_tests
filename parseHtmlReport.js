@@ -41,22 +41,33 @@ function generateJUnitXml(specResults, indexSummary, outputPath) {
     xml.att('failures', indexSummary.failedCount);
     xml.att('skipped', indexSummary.skippedCount);
 
+    // Create a testsuite element
+    const testsuite = xml.ele('testsuite', {
+        name: 'Gauge Test Suite',
+        tests: indexSummary.totalScenarios,
+        failures: indexSummary.failedCount,
+        skipped: indexSummary.skippedCount,
+        time: '0' // Replace '0' with total execution time if available
+    });
+
     specResults.forEach(spec => {
-        const testcase = xml.ele('testcase', {
+        const testcase = testsuite.ele('testcase', {
             name: spec.scenarioName,
-            classname: 'specs'
+            classname: 'specs',
+            time: '0' // Replace '0' with actual execution time if available
         });
 
         if (spec.status === 'Failed') {
-            const failure = testcase.ele('failure', { message: spec.errorMessage });
-            failure.dat(spec.stacktrace);
+            testcase.ele('failure', {}, spec.errorMessage);
         }
     });
 
+    // Write the XML to file
     const xmlString = xml.end({ pretty: true });
     fs.writeFileSync(outputPath, xmlString);
     console.log(`JUnit XML report generated at ${outputPath}`);
 }
+
 
 // Main execution
 const specsDirectoryPath = '/Users/balaji/Desktop/Gauge-test-project/reports/html-report/specs'; // Update with your directory path
