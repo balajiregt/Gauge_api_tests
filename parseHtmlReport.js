@@ -86,3 +86,4 @@ fs.readdirSync(specsDirectoryPath).forEach(file => {
 });
 
 generateJUnitXml(allSpecResults, indexSummary, xmlOutputPath);
+
