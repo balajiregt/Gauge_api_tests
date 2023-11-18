@@ -24,15 +24,15 @@ pipeline {
 
         stage('Setup Gauge Environment') {
             steps {
-                // Install all required Gauge plugins
-                sh 'gauge --install-all'
+                // Adding Gauge to PATH
+                sh 'export PATH=$PATH:/opt/homebrew/bin && gauge --install-all'
             }
         }
 
         stage('Run Gauge Tests') {
             steps {
                 // Run Gauge tests
-                sh 'gauge run specs'
+                sh 'export PATH=$PATH:/opt/homebrew/bin && gauge run specs'
             }
         }
 
