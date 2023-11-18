@@ -23,13 +23,10 @@ pipeline {
         }
 
         stage('Run Gauge Tests') {
-           steps {
-             {
-            sh 'gauge run specs'
+            steps {
+                sh 'gauge run specs'
+            }
         }
-    }
-}
-
 
         stage('Generate JUnit Report') {
             steps {
