@@ -69,10 +69,9 @@ function generateJUnitXml(specResults, indexSummary, outputPath) {
 }
 
 
-// Main execution
-const specsDirectoryPath = '/Users/balaji/Desktop/Gauge-test-project/reports/html-report/specs'; // Update with your directory path
-const indexFilePath = '/Users/balaji/Desktop/Gauge-test-project/reports/html-report/index.html'; // Update with your file path
-const xmlOutputPath = '/Users/balaji/Desktop/Gauge-test-project/junit_report.xml'; // Update with your desired output path
+const specsDirectoryPath = 'reports/html-report/specs';
+const indexFilePath = 'reports/html-report/index.html';
+const xmlOutputPath = 'junit_report.xml'; // This will create the file in the workspace root
 
 const indexHtmlContent = fs.readFileSync(indexFilePath, 'utf8');
 const indexSummary = parseIndexHtmlToXML(indexHtmlContent);
@@ -86,4 +85,3 @@ fs.readdirSync(specsDirectoryPath).forEach(file => {
 });
 
 generateJUnitXml(allSpecResults, indexSummary, xmlOutputPath);
-
