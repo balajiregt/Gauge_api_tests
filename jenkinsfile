@@ -27,12 +27,12 @@ pipeline {
                 // Run Gauge tests
                 sh 'export PATH=$PATH:/opt/homebrew/bin && gauge run specs'
             }
-        }
 
-        stage('Generate JUnit Report') {
-            steps {
-                // Generate JUnit report from Gauge test results
-                sh 'node parseHtmlReport.js'
+            post {
+                always {
+                    // This will always execute, even if the Gauge tests fail
+                    sh 'node parseHtmlReport.js'
+                }
             }
         }
     }
