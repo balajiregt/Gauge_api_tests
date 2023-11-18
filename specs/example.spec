@@ -1,53 +1,9 @@
-# Getting Started with Gauge
+# API Health Check
 
-This is an example markdown specification file.
-Every heading in this file is a scenario.
-Every bulleted point is a step.
+## Verify GET endpoint
 
-To execute this specification, use
-	npm test
+* The gorest GET public endpoint should return status code 200
 
-This is a context step that runs before every scenario
-* Open todo application
+## Verify POST endpoint
 
-## Display number of items
-* Add task "first task"
-* Must display "1 item left"
-* Add task "second task"
-* Must display "2 items left"
-
-## Must list only active tasks
-* Add tasks 
-
-   |description|
-   |-----------|
-   |first task |
-   |second task|
-   |third task |
-   |fourth task|
-   |fifth task |
-
-* Complete tasks 
-
-   |description|
-   |-----------|
-   |second task|
-   |fifth task |
-* View "Active" tasks
-* Must have 
-
-   |description|
-   |-----------|
-   |first task |
-   |third task |
-   |fourth task|
-* Must not have 
-
-   |description|
-   |-----------|
-   |second task|
-   |fifth task |
-
-A tear down step for every scenario
-___
-* Clear all tasks
+* The gorest POST public endpoint should return status code 401

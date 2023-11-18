@@ -2,10 +2,11 @@
   "name": "gauge-taiko-template",
   "description": "Starter template for writing JavaScript tests for Gauge",
   "scripts": {
-    "test": "gauge run specs || true",
     "posttest": "node parseHtmlReport.js"
   },
   "dependencies": {
+    "axios": "^1.6.2",
+    "chai": "^4.3.10",
     "cheerio": "^1.0.0-rc.12",
     "taiko": "latest",
     "xmlbuilder": "^15.1.1"

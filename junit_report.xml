@@ -1,25 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="Gauge Tests" tests="2" failures="1" skipped="0">
-  <testcase name="Getting Started with Gauge" time="00:00:18">
-    <failure type="Failure" message="{}"><![CDATA[Stacktrace: TypeError: Cannot read properties of undefined (reading 'exists')    at Object.<anonymous> (tests/step_implementation.js:88:47)]]></failure>
-    <step status="Passed"><![CDATA[Open todo application]]></step>
-    <step status="Passed"><![CDATA[Add tasks]]></step>
-    <step status="Passed"><![CDATA[Complete tasks]]></step>
-    <step status="Passed"><![CDATA[View 
-      "Active"
-         tasks]]></step>
-    <step status="Failed"><![CDATA[Must have]]></step>
-    <step status="Passed"><![CDATA[Must not have]]></step>
-    <step status="Passed"><![CDATA[Clear all tasks]]></step>
-    <step status="Passed"><![CDATA[Open todo application]]></step>
-    <step status="Passed"><![CDATA[Add task 
-      "first task"]]></step>
-    <step status="Passed"><![CDATA[Must display 
-      "1 item left"]]></step>
-    <step status="Passed"><![CDATA[Add task 
-      "second task"]]></step>
-    <step status="Passed"><![CDATA[Must display 
-      "2 items left"]]></step>
-    <step status="Passed"><![CDATA[Clear all tasks]]></step>
-  </testcase>
+<testsuites name="Gauge Tests" tests="2" failures="0" skipped="0">
+  <testcase name="Getting Started with Gauge" time="00:00:13"/>
+  <properties>
+    <property name="totalSpecs" value="1"/>
+    <property name="totalScenarios" value="2"/>
+    <property name="passedScenarios" value="1"/>
+    <property name="failedScenarios" value="0"/>
+    <property name="skippedScenarios" value="0"/>
+  </properties>
 </testsuites>
