@@ -11,6 +11,10 @@ pipeline {
                 // Delete the junit_report.xml file to ensure a clean start
                 sh 'rm -f junit_report.xml'
                 echo 'JUnit report file removed.'
+
+                // Create a new, empty junit_report.xml file
+                sh 'touch junit_report.xml'
+                echo 'New JUnit report file created.'
             }
         }
 
@@ -35,7 +39,7 @@ pipeline {
             }
             post {
                 always {
-                    // This will always execute, even if the Gauge tests fail
+                    // Execute script to parse HTML report and generate JUnit XML
                     sh 'node parseHtmlReport.js'
                 }
             }
