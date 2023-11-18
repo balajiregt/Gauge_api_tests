@@ -1,97 +1,77 @@
 const fs = require('fs');
+const path = require('path');
 const cheerio = require('cheerio');
 const xmlbuilder = require('xmlbuilder');
-const path = require('path');
 
-// Function to parse index.html for overall summary
-function parseIndexHtml(htmlContent) {
+// Function to parse individual spec HTML content and return test results
+function parseSpecFileToXML(htmlContent) {
     const $ = cheerio.load(htmlContent);
-    const totalSpecs = parseInt($('.total-specs .value').text().trim(), 10);
-    const totalScenarios = parseInt($('.total-scenarios .value').text().trim(), 10);
-    const failedCount = parseInt($('.fail .value').first().text().trim(), 10);
-    const passedCount = parseInt($('.pass .value').first().text().trim(), 10);
-    const skippedCount = parseInt($('.skip .value').first().text().trim(), 10);
+    let testResults = [];
+
+    $('.scenario-container').each((_, elem) => {
+        const scenarioName = $(elem).find('.scenario-head .head').text().trim();
+        const statusClass = $(elem).attr('class');
+        const status = statusClass.includes('failed') ? 'Failed' : 'Passed';
+        const errorMessage = status === 'Failed' ? $(elem).find('.error-message pre').text().trim() : '';
+        const stacktrace = status === 'Failed' ? $(elem).find('.stacktrace').text().trim() : '';
+
+        testResults.push({ scenarioName, status, errorMessage, stacktrace });
+    });
+
+    return testResults;
+}
+
+// Function to parse index.html content for overview
+function parseIndexHtmlToXML(htmlContent) {
+    const $ = cheerio.load(htmlContent);
+    const totalSpecs = $('.total-specs .value').text().trim();
+    const totalScenarios = $('.total-scenarios .value').text().trim();
+    const failedCount = $('.fail.scenario-stats .value').text().trim();
+    const passedCount = $('.pass.scenario-stats .value').text().trim();
+    const skippedCount = $('.skip.scenario-stats .value').text().trim();
 
     return { totalSpecs, totalScenarios, failedCount, passedCount, skippedCount };
 }
 
-// Function to parse a single HTML report file
-function parseSingleHtmlReport(htmlContent) {
-    const $ = cheerio.load(htmlContent);
-    let testResults = [];
-
-    // Extracting details for each specification
-    $('.spec-name').each((_, elem) => {
-        const specName = $(elem).find('.scenarioname').text().trim();
-        const specStatus = $(elem).hasClass('failed') ? 'Failed' : 'Passed';
-        const specDuration = $(elem).find('.time').text().trim();
-
-        testResults.push({ specName, specStatus, specDuration });
-    });
-
-    return testResults;
-}
-
 // Function to generate JUnit XML from test results
-function generateJUnitXml(allTestResults, summary, outputFilePath) {
+function generateJUnitXml(specResults, indexSummary, outputPath) {
     const xml = xmlbuilder.create('testsuites', { encoding: 'UTF-8' });
     xml.att('name', 'Gauge Tests');
-    xml.att('tests', summary.totalScenarios);
-    xml.att('failures', summary.failedCount);
-    xml.att('skipped', summary.skippedCount);
+    xml.att('tests', indexSummary.totalScenarios);
+    xml.att('failures', indexSummary.failedCount);
+    xml.att('skipped', indexSummary.skippedCount);
 
-    allTestResults.forEach(spec => {
+    specResults.forEach(spec => {
         const testcase = xml.ele('testcase', {
-            name: spec.specName,
-            time: spec.specDuration
+            name: spec.scenarioName,
+            classname: 'specs'
         });
 
-        if (spec.specStatus === 'Failed') {
-            testcase.ele('failure', {}, 'Some tests failed');
+        if (spec.status === 'Failed') {
+            const failure = testcase.ele('failure', { message: spec.errorMessage });
+            failure.dat(spec.stacktrace);
         }
     });
 
-    // Add a custom property to the XML to include summary details
-    const properties = xml.ele('properties');
-    properties.ele('property', { name: 'totalSpecs', value: summary.totalSpecs });
-    properties.ele('property', { name: 'totalScenarios', value: summary.totalScenarios });
-    properties.ele('property', { name: 'passedScenarios', value: summary.passedCount });
-    properties.ele('property', { name: 'failedScenarios', value: summary.failedCount });
-    properties.ele('property', { name: 'skippedScenarios', value: summary.skippedCount });
-
     const xmlString = xml.end({ pretty: true });
-    fs.writeFileSync(outputFilePath, xmlString);
+    fs.writeFileSync(outputPath, xmlString);
+    console.log(`JUnit XML report generated at ${outputPath}`);
 }
 
-// Recursive function to read all HTML files from the specs subdirectory
-function readHtmlFiles(dirPath) {
-    let testResults = [];
-    const specsFolderPath = path.join(dirPath, 'specs');
-    const entries = fs.readdirSync(specsFolderPath, { withFileTypes: true });
+// Main execution
+const specsDirectoryPath = '/Users/balaji/Desktop/Gauge-test-project/reports/html-report/specs'; // Update with your directory path
+const indexFilePath = '/Users/balaji/Desktop/Gauge-test-project/reports/html-report/index.html'; // Update with your file path
+const xmlOutputPath = '/Users/balaji/Desktop/Gauge-test-project/junit_report.xml'; // Update with your desired output path
 
-    for (const entry of entries) {
-        const entryPath = path.join(specsFolderPath, entry.name);
-        if (entry.isFile() && entry.name.endsWith('.html')) {
-            const htmlContent = fs.readFileSync(entryPath, 'utf8');
-            testResults.push(...parseSingleHtmlReport(htmlContent));
-        }
+const indexHtmlContent = fs.readFileSync(indexFilePath, 'utf8');
+const indexSummary = parseIndexHtmlToXML(indexHtmlContent);
+
+let allSpecResults = [];
+fs.readdirSync(specsDirectoryPath).forEach(file => {
+    if (file.endsWith('.html')) {
+        const specHtmlContent = fs.readFileSync(path.join(specsDirectoryPath, file), 'utf8');
+        allSpecResults = allSpecResults.concat(parseSpecFileToXML(specHtmlContent));
     }
+});
 
-    return testResults;
-}
-
-// Path to the html-report folder and index.html
-const htmlReportFolderPath = '/Users/balaji/Desktop/Gauge-test-project/reports/html-report';
-const indexHtmlPath = path.join(htmlReportFolderPath, 'index.html');
-
-// Parse index.html for overall summary
-const indexHtmlContent = fs.readFileSync(indexHtmlPath, 'utf8');
-const summary = parseIndexHtml(indexHtmlContent);
-
-// Read and parse individual spec HTML files from the specs subfolder
-const allTestResults = readHtmlFiles(htmlReportFolderPath);
-
-const xmlOutputPath = '/Users/balaji/Desktop/Gauge-test-project/junit_report.xml';
-generateJUnitXml(allTestResults, summary, xmlOutputPath);
-
-console.log('JUnit XML report generated:', xmlOutputPath);
+generateJUnitXml(allSpecResults, indexSummary, xmlOutputPath);
