@@ -8,39 +8,41 @@ pipeline {
     stages {
         stage('Prepare') {
             steps {
-                // Delete the junit_report.xml file to ensure a clean start
+                // Delete and recreate the junit_report.xml file to ensure a clean start
                 sh 'rm -f junit_report.xml'
-                echo 'JUnit report file removed.'
-
-                // Create a new, empty junit_report.xml file
                 sh 'touch junit_report.xml'
-                echo 'New JUnit report file created.'
+                echo 'JUnit report file prepared.'
             }
         }
 
         stage('Checkout') {
             steps {
-                // Checks out the source code from the Git repository
                 checkout scm
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                // Install npm dependencies
                 sh 'npm install'
             }
         }
 
         stage('Run Gauge Tests') {
             steps {
-                // Run Gauge tests
                 sh 'export PATH=$PATH:/opt/homebrew/bin && gauge run specs'
             }
             post {
                 always {
-                    // Execute script to parse HTML report and generate JUnit XML
                     sh 'node parseHtmlReport.js'
+                    // Check if the junit_report.xml file is generated and not empty
+                    script {
+                        if (sh(script: "test -s junit_report.xml", returnStatus: true) == 0) {
+                            echo 'JUnit report file is generated and not empty.'
+                        } else {
+                            echo 'JUnit report file is missing or empty. Check parseHtmlReport.js script.'
+                            // Optional: Handle error or exit
+                        }
+                    }
                 }
             }
         }
@@ -48,20 +50,15 @@ pipeline {
 
     post {
         always {
-            // Publish JUnit test results
             junit 'junit_report.xml'
-
-            // Action to perform after the pipeline execution, regardless of the result
             echo 'Pipeline execution is complete.'
         }
 
         success {
-            // Actions to perform if the pipeline succeeds
             echo 'Pipeline succeeded!'
         }
 
         failure {
-            // Actions to perform if the pipeline fails
             echo 'Pipeline failed. Check logs for details.'
         }
     }
