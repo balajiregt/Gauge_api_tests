@@ -45,8 +45,8 @@ function generateJUnitXml(specResults, outputPath) {
 }
 
 // Main execution: reading and parsing spec files
-const specsDirectoryPath = 'path/to/your/reports/html-report/specs'; // Update with your directory path
-const xmlOutputPath = 'path/to/your/junit_report.xml'; // Update with your desired output path
+const specsDirectoryPath = '/Users/balaji/Desktop/Gauge-test-project/reports/html-report/specs'; // Update with your directory path
+const xmlOutputPath = '/Users/balaji/Desktop/Gauge-test-project/junit_report.xml'; // Update with your desired output path
 
 let allSpecResults = [];
 fs.readdirSync(specsDirectoryPath).forEach(file => {
