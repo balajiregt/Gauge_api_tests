@@ -22,14 +22,6 @@ pipeline {
             }
         }
 
-        stage('Setup Gauge Environment') {
-            steps {
-                withEnv(["PATH+GAUGE=/opt/homebrew/bin"]) {
-                    sh 'gauge --install-all'
-                }
-            }
-        }
-
         stage('Run Gauge Tests') {
             steps {
                 // Run Gauge tests
