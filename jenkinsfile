@@ -2,36 +2,31 @@ pipeline {
     agent any
 
     tools {
-        // Ensure 'NodeJS' matches the name of the Node.js installation
-        // configured in your Jenkins Global Tool Configuration
         nodejs 'NodeJS'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Checks out the source code from the Git repository
                 checkout scm
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                // Install npm dependencies
                 sh 'npm install'
             }
         }
 
         stage('Run Gauge Tests') {
             steps {
-                // Run Gauge tests
                 sh 'export PATH=$PATH:/opt/homebrew/bin && gauge run specs'
             }
-
             post {
                 always {
-                    // This will always execute, even if the Gauge tests fail
                     sh 'node parseHtmlReport.js'
+                    // Debug: List files in the current directory
+                    sh 'ls -la'
                 }
             }
         }
@@ -39,24 +34,24 @@ pipeline {
 
     post {
         always {
-            // Publish JUnit test results
+            // Attempt to publish JUnit test results
             junit 'junit_report.xml'
-            
-            // Clean up the junit_report.xml file after it's been used
+
+            // Debug: List files again to confirm if junit_report.xml still exists
+            sh 'ls -la'
+
+            // Clean up the junit_report.xml file after publishing
             sh 'rm -f junit_report.xml'
             echo 'Cleaned up junit_report.xml'
 
-            // Action to perform after the pipeline execution, regardless of the result
             echo 'Pipeline execution is complete.'
         }
 
         success {
-            // Actions to perform if the pipeline succeeds
             echo 'Pipeline succeeded!'
         }
 
         failure {
-            // Actions to perform if the pipeline fails
             echo 'Pipeline failed. Check logs for details.'
         }
     }
