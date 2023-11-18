@@ -6,28 +6,7 @@ pipeline {
     }
 
     stages {
-        stage('Prepare') {
-            steps {
-                // Delete and recreate the junit_report.xml file to ensure a clean start
-                sh 'rm -f junit_report.xml'
-                sh 'touch junit_report.xml'
-                echo 'JUnit report file prepared.'
-            }
-        }
-
-        stage('Checkout') {
-            steps {
-                // Checks out the source code from the Git repository
-                checkout scm
-            }
-        }
-
-        stage('Install Dependencies') {
-            steps {
-                // Install npm dependencies
-                sh 'npm install'
-            }
-        }
+        // ... other stages ...
 
         stage('Run Gauge Tests') {
             steps {
@@ -42,12 +21,17 @@ pipeline {
                 sh 'node parseHtmlReport.js'
             }
         }
+
+        stage('Publish Test Results') {
+            steps {
+                // Publish JUnit test results
+                junit 'junit_report.xml'
+            }
+        }
     }
 
     post {
         always {
-            // Publish JUnit test results
-            junit 'junit_report.xml'
             echo 'Pipeline execution is complete.'
         }
 
