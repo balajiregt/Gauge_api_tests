@@ -6,4 +6,4 @@
 
 ## Verify POST endpoint
 
-* The gorest POST public endpoint should return status code 401
+* The gorest POST public endpoint should return status code 201
