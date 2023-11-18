@@ -41,7 +41,7 @@ pipeline {
         always {
             // Publish JUnit test results
 
-            junit 'junit_report.xml
+            junit 'junit_report.xml'
             
             // Action to perform after the pipeline execution, regardless of the result
             echo 'Pipeline execution is complete.'
