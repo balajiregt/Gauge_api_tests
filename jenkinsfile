@@ -11,7 +11,7 @@ pipeline {
         stage('Run Gauge Tests') {
             steps {
                 // Run Gauge tests
-                sh 'gauge run specs'
+                sh 'export PATH=$PATH:/opt/homebrew/bin && gauge run specs'
             }
         }
 
