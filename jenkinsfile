@@ -11,23 +11,20 @@ pipeline {
         stage('Run Gauge Tests') {
             steps {
                 // Run Gauge tests
-                sh 'export PATH=$PATH:/opt/homebrew/bin && gauge run specs'
+                sh 'export PATH=$PATH:/opt/homebrew/bin && gauge run specs || true' // Continue even if tests fail
+            }
+            post {
+                always {
+                    // Always generate JUnit report regardless of test outcome
+                    sh 'node parseHtmlReport.js'
+                    // Publish JUnit test results
+                    junit 'junit_report.xml'
+                }
             }
         }
 
-        stage('Generate JUnit Report') {
-            steps {
-                // Execute the script to parse the HTML report and generate the JUnit report
-                sh 'node parseHtmlReport.js'
-            }
-        }
-
-        stage('Publish Test Results') {
-            steps {
-                // Publish JUnit test results
-                junit 'junit_report.xml'
-            }
-        }
+        // Remove the separate 'Generate JUnit Report' and 'Publish Test Results' stages
+        // as they are now part of the 'Run Gauge Tests' stage
     }
 
     post {
