@@ -1,19 +1,16 @@
-@Step("Start the application")
-public void startTheApplication() {
-    // Code to start the application
-}
+step("Start the application", async () => {
+    console.log("First step")
+});
 
-@Step("Enter username <username> and password <password>")
-public void enterCredentials(String username, String password) {
-    // Code to enter the username and password
-}
+step("TEnter username <username> and password <password>", async () => {
+    console.log("Second step")
+});
 
-@Step("Click the login button")
-public void clickLoginButton() {
-    // Code to click the login button
-}
+step("Click the login button", async () => {
+    console.log("Third step")
+});
 
-@Step("Verify the user is logged in")
-public void verifyUserLoggedIn() {
-    // Code to verify the user is logged in
-}
+step("Verify the user is logged in", async () => {
+    console.log("Fourth step")
+});
+
