@@ -2,7 +2,7 @@ step("Start the application", async () => {
     console.log("First step")
 });
 
-step("TEnter username <username> and password <password>", async () => {
+step("Enter username and password", async () => {
     console.log("Second step")
 });
 
