@@ -1,6 +1,7 @@
-Login Test
+# Login Test
 
-Successful Login
+## Successful Login
+
 * Start the application
 * Enter username "admin" and password "password"
 * Click the login button
