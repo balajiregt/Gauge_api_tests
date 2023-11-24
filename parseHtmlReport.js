@@ -44,24 +44,24 @@ function generateJUnitXml(specResults, indexSummary, outputPath) {
     xml.att('failures', indexSummary.failedCount);
     xml.att('skipped', indexSummary.skippedCount);
 
-    // Create a testsuite element
-    const testsuite = xml.ele('testsuite', {
-        name: 'Gauge Test Suite',
-        tests: indexSummary.totalScenarios,
-        failures: indexSummary.failedCount,
-        skipped: indexSummary.skippedCount,
-        time: '0' // Replace '0' with total execution time if available
-    });
-
-    specResults.forEach(spec => {
-        const testcase = testsuite.ele('testcase', {
-            name: `${spec.specName} - ${spec.scenarioName}`,
-            classname: 'specs',
+    // Create a testsuite element for each specification
+    specResults.forEach(({ specName, scenarioName, status, errorMessage, stacktrace }) => {
+        const testsuite = xml.ele('testsuite', {
+            name: specName,
+            tests: '1', // Each testsuite represents one scenario in this context
+            failures: status === 'Failed' ? '1' : '0',
+            skipped: status === 'Skipped' ? '1' : '0',
             time: '0' // Replace '0' with actual execution time if available
         });
 
-        if (spec.status === 'Failed') {
-            testcase.ele('failure', {}, spec.errorMessage);
+        const testcase = testsuite.ele('testcase', {
+            name: scenarioName,
+            classname: specName,
+            time: '0' // Replace '0' with actual execution time if available
+        });
+
+        if (status === 'Failed') {
+            testcase.ele('failure', {}, errorMessage).dat(stacktrace);
         }
     });
 
