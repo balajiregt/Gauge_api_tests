@@ -8,7 +8,8 @@ function parseSpecFileToXML(htmlContent) {
     const $ = cheerio.load(htmlContent);
     let testResults = [];
 
-    const specName = $('.spec-head').text().trim(); // Extracting the spec name
+    // Extracting the spec name
+    const specName = $('.spec-head').text().trim();
 
     $('.scenario-container').each((_, elem) => {
         const scenarioName = $(elem).find('.scenario-head .head').text().trim();
