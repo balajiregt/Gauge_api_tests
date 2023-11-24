@@ -8,6 +8,8 @@ function parseSpecFileToXML(htmlContent) {
     const $ = cheerio.load(htmlContent);
     let testResults = [];
 
+    const specName = $('.spec-head').text().trim(); // Extracting the spec name
+
     $('.scenario-container').each((_, elem) => {
         const scenarioName = $(elem).find('.scenario-head .head').text().trim();
         const statusClass = $(elem).attr('class');
@@ -15,7 +17,7 @@ function parseSpecFileToXML(htmlContent) {
         const errorMessage = status === 'Failed' ? $(elem).find('.error-message pre').text().trim() : '';
         const stacktrace = status === 'Failed' ? $(elem).find('.stacktrace').text().trim() : '';
 
-        testResults.push({ scenarioName, status, errorMessage, stacktrace });
+        testResults.push({ specName, scenarioName, status, errorMessage, stacktrace });
     });
 
     return testResults;
@@ -52,7 +54,7 @@ function generateJUnitXml(specResults, indexSummary, outputPath) {
 
     specResults.forEach(spec => {
         const testcase = testsuite.ele('testcase', {
-            name: spec.scenarioName,
+            name: `${spec.specName} - ${spec.scenarioName}`,
             classname: 'specs',
             time: '0' // Replace '0' with actual execution time if available
         });
@@ -68,10 +70,10 @@ function generateJUnitXml(specResults, indexSummary, outputPath) {
     console.log(`JUnit XML report generated at ${outputPath}`);
 }
 
-
-const specsDirectoryPath = 'reports/html-report/specs';
-const indexFilePath = 'reports/html-report/index.html';
-const xmlOutputPath = 'junit_report.xml'; // This will create the file in the workspace root
+// Main execution
+const specsDirectoryPath = '/Users/balaji/Desktop/Gauge-test-project/reports/html-report/specs'; // Update with your directory path
+const indexFilePath = '/Users/balaji/Desktop/Gauge-test-project/reports/html-report/index.html'; // Update with your file path
+const xmlOutputPath = '/Users/balaji/Desktop/Gauge-test-project/junit_report.xml'; // Update with your desired output path
 
 const indexHtmlContent = fs.readFileSync(indexFilePath, 'utf8');
 const indexSummary = parseIndexHtmlToXML(indexHtmlContent);
