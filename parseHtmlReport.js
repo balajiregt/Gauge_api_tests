@@ -6,10 +6,8 @@ const xmlbuilder = require('xmlbuilder');
 // Function to parse individual spec HTML content and return test results
 function parseSpecFileToXML(htmlContent) {
     const $ = cheerio.load(htmlContent);
+    const specName = $('.spec-head').text().trim(); // Capture the specification name
     let testResults = [];
-
-    // Extracting the spec name
-    const specName = $('.spec-head').text().trim();
 
     $('.scenario-container').each((_, elem) => {
         const scenarioName = $(elem).find('.scenario-head .head').text().trim();
@@ -44,24 +42,24 @@ function generateJUnitXml(specResults, indexSummary, outputPath) {
     xml.att('failures', indexSummary.failedCount);
     xml.att('skipped', indexSummary.skippedCount);
 
-    // Create a testsuite element for each specification
-    specResults.forEach(({ specName, scenarioName, status, errorMessage, stacktrace }) => {
+    specResults.forEach(spec => {
         const testsuite = xml.ele('testsuite', {
-            name: specName,
-            tests: '1', // Each testsuite represents one scenario in this context
-            failures: status === 'Failed' ? '1' : '0',
-            skipped: status === 'Skipped' ? '1' : '0',
+            name: spec.specName,
+            tests: indexSummary.totalScenarios,
+            failures: indexSummary.failedCount,
+            skipped: indexSummary.skippedCount,
             time: '0' // Replace '0' with actual execution time if available
         });
 
         const testcase = testsuite.ele('testcase', {
-            name: scenarioName,
-            classname: specName,
+            name: spec.scenarioName,
+            classname: 'scenarios',
             time: '0' // Replace '0' with actual execution time if available
         });
 
-        if (status === 'Failed') {
-            testcase.ele('failure', {}, errorMessage).dat(stacktrace);
+        if (spec.status === 'Failed') {
+            testcase.ele('failure', {}, spec.errorMessage)
+            .dat(spec.stacktrace);
         }
     });
 
@@ -70,6 +68,7 @@ function generateJUnitXml(specResults, indexSummary, outputPath) {
     fs.writeFileSync(outputPath, xmlString);
     console.log(`JUnit XML report generated at ${outputPath}`);
 }
+
 
 // Main execution
 const specsDirectoryPath = '/Users/balaji/Desktop/Gauge-test-project/reports/html-report/specs'; // Update with your directory path
