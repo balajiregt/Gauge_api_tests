@@ -13,14 +13,6 @@ pipeline {
                 // Run Gauge tests
                 sh 'export PATH=$PATH:/opt/homebrew/bin && gauge run specs || true' // Continue even if tests fail
             }
-            post {
-                always {
-                    // Always generate JUnit report regardless of test outcome
-                    sh 'node parseHtmlReport.js'
-                    // Publish JUnit test results
-                    junit 'junit_report.xml'
-                }
-            }
         }
 
         // Remove the separate 'Generate JUnit Report' and 'Publish Test Results' stages
