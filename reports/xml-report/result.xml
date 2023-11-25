@@ -1,0 +1,23 @@
+<testsuites>
+	<testsuite id="1" tests="2" failures="0" package="/Users/balaji/Desktop/Gauge-test-project/specs/example2.spec" time="0.520" timestamp="2023-11-25T09:20:04" name="API Health Check2" errors="0" hostname="Balajis-MacBook-Air.local">
+		<properties></properties>
+		<testcase classname="API Health Check2" name="Verify GET endpoint2" time="0.160"></testcase>
+		<testcase classname="API Health Check2" name="Verify POST endpoint2" time="0.360"></testcase>
+		<system-out></system-out>
+		<system-err></system-err>
+	</testsuite>
+	<testsuite id="2" tests="2" failures="0" package="/Users/balaji/Desktop/Gauge-test-project/specs/example3.spec" time="0.002" timestamp="2023-11-25T09:20:04" name="Login Test" errors="0" hostname="Balajis-MacBook-Air.local">
+		<properties></properties>
+		<testcase classname="Login Test" name="Successful Login" time="0.001"></testcase>
+		<testcase classname="Login Test" name="Failure Login" time="0.001"></testcase>
+		<system-out></system-out>
+		<system-err></system-err>
+	</testsuite>
+	<testsuite id="3" tests="2" failures="0" package="/Users/balaji/Desktop/Gauge-test-project/specs/example.spec" time="0.548" timestamp="2023-11-25T09:20:04" name="API Health Check" errors="0" hostname="Balajis-MacBook-Air.local">
+		<properties></properties>
+		<testcase classname="API Health Check" name="Verify GET endpoint" time="0.172"></testcase>
+		<testcase classname="API Health Check" name="Verify POST endpoint" time="0.376"></testcase>
+		<system-out></system-out>
+		<system-err></system-err>
+	</testsuite>
+</testsuites>
