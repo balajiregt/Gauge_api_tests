@@ -3,7 +3,7 @@ const { expect } = require('chai');
 
 step("The gorest GET public endpoint should return status code 200. This is second test", async () => {
     const response = await axios.get('https://reqres.in/api/users?page=2');
-    expect(response.status).to.equal(200);
+    expect(response.status).to.equal(201);
     console.log(response.data)
 });
 
