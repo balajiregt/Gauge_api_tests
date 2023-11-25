@@ -29,6 +29,6 @@ step("Enter incorrect username and password", async () => {
 
 
 step("Verify error message", async () => {
-    expect(true).to.be.true;
+    expect(true).to.be.false;
     console.log("Fourth step")
 });
