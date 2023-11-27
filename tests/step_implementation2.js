@@ -9,7 +9,7 @@ step("The gorest GET public endpoint should return status code 200. This is seco
 
 step("The gorest POST public endpoint should not return status code 401. This is second test", async () => {
     const response = await axios.post('https://reqres.in/api/users?page=2')
-    expect(response.status).to.equal(201);
+    expect(response.status).to.equal(200);
     console.log(response.data)
 
 });
