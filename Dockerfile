@@ -1,54 +1,22 @@
-# Building the image
-# 	docker build -t gauge-taiko .
-# Running the image
-# 	docker run  --rm -it -v ${PWD}/reports:/gauge/reports gauge-taiko
-
-# This image uses the official node base image.
-FROM node
- 
-# The Taiko installation downloads and installs the chromium required to run the tests. 
-# However, we need the chromium dependencies installed in the environment. These days, most 
-# Dockerfiles just install chrome to get the dependencies.
-RUN apt-get update \
-     && apt-get install -y wget gnupg ca-certificates \
-     && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-     && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
-     && apt-get update \
-     && apt-get install -y google-chrome-stable
- 
-# Set a custom npm install location so that Gauge, Taiko and dependencies can be 
-# installed without root privileges
-ENV NPM_CONFIG_PREFIX=/home/gauge/.npm-packages
-ENV PATH="${NPM_CONFIG_PREFIX}/bin:${PATH}"
-
-# Add the Taiko browser arguments
-ENV TAIKO_BROWSER_ARGS=--no-sandbox,--start-maximized,--disable-dev-shm-usage
-ENV headless_chrome=true
-ENV TAIKO_SKIP_DOCUMENTATION=true
-
-# Uncomment the lines below to use chrome bundled with this image
-#ENV TAIKO_SKIP_CHROMIUM_DOWNLOAD=true
-#ENV TAIKO_BROWSER_PATH=/usr/bin/google-chrome
- 
-# Set working directory
+# API-only Gauge runner; no Chromium or browser sandbox bypass is needed.
+FROM node:26.13.0-bookworm-slim
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl unzip \
+    && rm -rf /var/lib/apt/lists/*
+RUN set -eu; case "$(dpkg --print-architecture)" in \
+      amd64) gauge_arch=x86_64; gauge_sha=673b70751d1c6e5e6eee0c233ef7eb5760a1f7eb61007742c688e62b58297b43 ;; \
+      arm64) gauge_arch=arm64; gauge_sha=5fa84641048583b00794fa757c22a9e9ba12007232a97d38722a22267d9d5db7 ;; \
+      *) exit 1 ;; esac; \
+    curl -fsSL "https://github.com/getgauge/gauge/releases/download/v1.6.42/gauge-1.6.42-linux.${gauge_arch}.zip" -o /tmp/gauge.zip; \
+    echo "${gauge_sha}  /tmp/gauge.zip" | sha256sum -c -; \
+    unzip /tmp/gauge.zip -d /tmp/gauge; install /tmp/gauge/gauge /usr/local/bin/gauge; \
+    rm -rf /tmp/gauge /tmp/gauge.zip
+RUN groupadd -r gauge && useradd -m -r -g gauge gauge
 WORKDIR /gauge
- 
-# Copy the local working folder
-COPY . .
-
-# Create an unprivileged user to run Taiko tests
-RUN groupadd -r gauge && useradd -r -g gauge -G audio,video gauge && \
-   mkdir -p /home/gauge/.npm-packages/lib && \
-   chown -R gauge:gauge /home/gauge /gauge
- 
+COPY --chown=gauge:gauge . .
 USER gauge
-
-# Install dependencies and plugins
-RUN npm install -g @getgauge/cli \
-    && npm install \
-    && gauge install \
-    && gauge install screenshot \
+RUN npm ci --ignore-scripts \
+    && gauge install js --version 5.0.8 \
+    && gauge install html-report --version 4.4.8 \
+    && gauge install xml-report --version 1.0.1 \
     && gauge config check_updates false
-
-# Default command on running the image
 ENTRYPOINT ["npm", "test"]

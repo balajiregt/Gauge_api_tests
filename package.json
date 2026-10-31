@@ -1,15 +1,20 @@
 {
   "name": "gauge-taiko-template",
-  "description": "Starter template for writing JavaScript tests for Gauge",
+  "description": "Gauge JavaScript API test examples",
   "scripts": {
-    "test": "gauge run specs || true"
+    "test": "gauge run specs",
+    "security:staged": "node scripts/security-gate.mjs",
+    "security:hooks": "node scripts/install-security-hook.mjs",
+    "security:check": "python3 scripts/security_audit.py"
   },
   "dependencies": {
     "axios": "^1.6.2",
     "chai": "^4.3.10",
     "cheerio": "^1.0.0-rc.12",
     "jsdom": "^22.1.0",
-    "taiko": "latest",
     "xmlbuilder": "^15.1.1"
+  },
+  "overrides": {
+    "follow-redirects": "1.16.2"
   }
 }
